@@ -25,6 +25,14 @@ namespace GaussianSplatting.Editor
         SerializedProperty m_PropOpacityScale;
         SerializedProperty m_PropSHOrder;
         SerializedProperty m_PropSHOnly;
+        SerializedProperty m_PropCenterPoint;
+        SerializedProperty m_PropCenterPointColor;
+        SerializedProperty m_PropBoundingRing;
+        SerializedProperty m_PropSelectedSplatColor;
+        SerializedProperty m_PropHighlightLerpStrenght;
+        SerializedProperty m_PropSelectedSplatBorder;
+        SerializedProperty m_PropBoundingRingThickness;
+        SerializedProperty m_PropSelectedCenterPointColor;
         SerializedProperty m_PropSortNthFrame;
         SerializedProperty m_PropRenderMode;
         SerializedProperty m_PropPointDisplaySize;
@@ -64,6 +72,14 @@ namespace GaussianSplatting.Editor
             m_PropOpacityScale = serializedObject.FindProperty("m_OpacityScale");
             m_PropSHOrder = serializedObject.FindProperty("m_SHOrder");
             m_PropSHOnly = serializedObject.FindProperty("m_SHOnly");
+            m_PropCenterPoint = serializedObject.FindProperty("m_CenterPoint");
+            m_PropCenterPointColor = serializedObject.FindProperty("m_CenterPointColor");
+            m_PropBoundingRing = serializedObject.FindProperty("m_BoundingRing");
+            m_PropSelectedSplatColor = serializedObject.FindProperty("m_SelectedSplatColor");
+            m_PropHighlightLerpStrenght = serializedObject.FindProperty("m_HighlightLerpStrenght");
+            m_PropSelectedSplatBorder = serializedObject.FindProperty("m_SelectedSplatBorder");
+            m_PropBoundingRingThickness = serializedObject.FindProperty("m_BoundingRingThickness");
+            m_PropSelectedCenterPointColor = serializedObject.FindProperty("m_SelectedCenterPointColor");
             m_PropSortNthFrame = serializedObject.FindProperty("m_SortNthFrame");
             m_PropRenderMode = serializedObject.FindProperty("m_RenderMode");
             m_PropPointDisplaySize = serializedObject.FindProperty("m_PointDisplaySize");
@@ -107,6 +123,15 @@ namespace GaussianSplatting.Editor
             EditorGUILayout.PropertyField(m_PropOpacityScale);
             EditorGUILayout.PropertyField(m_PropSHOrder);
             EditorGUILayout.PropertyField(m_PropSHOnly);
+            EditorGUILayout.PropertyField(m_PropCenterPoint);
+            EditorGUILayout.PropertyField(m_PropPointDisplaySize);
+            EditorGUILayout.PropertyField(m_PropCenterPointColor);
+            EditorGUILayout.PropertyField(m_PropBoundingRing);
+            EditorGUILayout.PropertyField(m_PropBoundingRingThickness);
+            EditorGUILayout.PropertyField(m_PropSelectedSplatColor);
+            EditorGUILayout.PropertyField(m_PropHighlightLerpStrenght);
+            EditorGUILayout.PropertyField(m_PropSelectedSplatBorder);
+            EditorGUILayout.PropertyField(m_PropSelectedCenterPointColor);
             EditorGUILayout.PropertyField(m_PropSortNthFrame);
 
             EditorGUILayout.Space();

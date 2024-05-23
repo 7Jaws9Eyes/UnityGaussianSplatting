@@ -18,15 +18,20 @@ CGPROGRAM
 
 #include "GaussianSplatting.hlsl"
 
+StructuredBuffer<uint> _OrderBuffer;
+
 struct v2f
 {
-    half3 color : TEXCOORD0;
+    half4 color : COLOR0;
     float4 vertex : SV_POSITION;
 };
-
+ByteAddressBuffer _SplatSelectedBits;
 float _SplatSize;
 bool _DisplayIndex;
 int _SplatCount;
+half4 _CenterPointColor;
+half4 _SelectedCenterPointColor;
+uint _SplatBitsValid;
 
 v2f vert (uint vtxID : SV_VertexID, uint instID : SV_InstanceID)
 {
@@ -52,12 +57,33 @@ v2f vert (uint vtxID : SV_VertexID, uint instID : SV_InstanceID)
         o.color.g = frac((float)splatIndex / (float)_SplatCount * 10);
         o.color.b = (float)splatIndex / (float)_SplatCount;
     }
+    o.color.a = f16tof32(1.0);
+    	// is this splat selected?
+	if (_SplatBitsValid)
+	{
+        instID = _OrderBuffer[instID];
+		uint wordIdx = instID / 32;
+		uint bitIdx = instID & 31;
+		uint selVal = _SplatSelectedBits.Load(wordIdx * 4);
+		if (selVal & (1 << bitIdx))
+		{
+		    o.color.a = f16tof32(-1.0);			
+		}
+	}
+
     return o;
 }
 
 half4 frag (v2f i) : SV_Target
 {
-    return half4(i.color.rgb, 1);
+    if (i.color.a >= 0)
+	{
+        return half4(_CenterPointColor);
+	}
+	else
+	{
+        return half4(_SelectedCenterPointColor);
+	}    
 }
 ENDCG
         }

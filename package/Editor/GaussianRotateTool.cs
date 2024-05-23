@@ -7,8 +7,8 @@ using UnityEngine;
 
 namespace GaussianSplatting.Editor
 {
-    /* not working correctly yet
-    [EditorTool("Gaussian Rotate Tool", typeof(GaussianSplatRenderer), typeof(GaussianToolContext))]
+    //not working correctly yet 
+   [EditorTool("Gaussian Rotate Tool", typeof(GaussianSplatRenderer), typeof(GaussianToolContext))]
     class GaussianRotateTool : GaussianTool
     {
         Quaternion m_CurrentRotation = Quaternion.identity;
@@ -59,12 +59,12 @@ namespace GaussianSplatting.Editor
                 if (!wasModified)
                     GaussianSplatRendererEditor.RepaintAll();
 
-                if(GUIUtility.hotControl == 0)
+                if (GUIUtility.hotControl == 0)
                 {
                     m_CurrentRotation = Tools.handleRotation;
                 }
             }
         }
     }
-    */
+
 }

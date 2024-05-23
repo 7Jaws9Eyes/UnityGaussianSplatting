@@ -7,6 +7,7 @@ using Unity.Collections.LowLevel.Unsafe;
 using Unity.Mathematics;
 using Unity.Profiling;
 using Unity.Profiling.LowLevel;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
@@ -139,6 +140,13 @@ namespace GaussianSplatting.Runtime
                 mpb.SetFloat(GaussianSplatRenderer.Props.SplatSize, gs.m_PointDisplaySize);
                 mpb.SetInteger(GaussianSplatRenderer.Props.SHOrder, gs.m_SHOrder);
                 mpb.SetInteger(GaussianSplatRenderer.Props.SHOnly, gs.m_SHOnly ? 1 : 0);
+                mpb.SetColor(GaussianSplatRenderer.Props.CenterPointColor, gs.m_CenterPointColor);
+                mpb.SetInteger(GaussianSplatRenderer.Props.BoundingRing, gs.m_BoundingRing == true ? 1 : 0);
+                mpb.SetColor(GaussianSplatRenderer.Props.SelectedSplatColor, gs.m_SelectedSplatColor);
+                mpb.SetFloat(GaussianSplatRenderer.Props.HighlightLerpStrenght, gs.m_HighlightLerpStrenght);
+                mpb.SetFloat(GaussianSplatRenderer.Props.SelectedSplatBorder, gs.m_SelectedSplatBorder);
+                mpb.SetFloat(GaussianSplatRenderer.Props.BoundingRingThickness, gs.m_BoundingRingThickness);
+                mpb.SetColor(GaussianSplatRenderer.Props.SelectedCenterPointColor, gs.m_SelectedCenterPointColor);
                 mpb.SetInteger(GaussianSplatRenderer.Props.DisplayIndex, gs.m_RenderMode == GaussianSplatRenderer.RenderMode.DebugPointIndices ? 1 : 0);
                 mpb.SetInteger(GaussianSplatRenderer.Props.DisplayChunks, gs.m_RenderMode == GaussianSplatRenderer.RenderMode.DebugChunkBounds ? 1 : 0);
 
@@ -157,6 +165,11 @@ namespace GaussianSplatting.Runtime
 
                 cmb.BeginSample(s_ProfDraw);
                 cmb.DrawProcedural(gs.m_GpuIndexBuffer, matrix, displayMat, 0, topology, indexCount, instanceCount, mpb);
+
+                if (gs.m_CenterPoint) { 
+                    cmb.DrawProcedural(gs.m_GpuIndexBuffer, matrix, gs.m_MatDebugPoints, 0, topology, indexCount, instanceCount, mpb);
+                }
+
                 cmb.EndSample(s_ProfDraw);
             }
             return matComposite;
@@ -223,11 +236,30 @@ namespace GaussianSplatting.Runtime
         public int m_SHOrder = 3;
         [Tooltip("Show only Spherical Harmonics contribution, using gray color")]
         public bool m_SHOnly;
+        [Tooltip("Show center points of splats")]
+        public bool m_CenterPoint;
+        [Tooltip("Specifiy which color the centerpoints are displayed as")]
+        public Color m_CenterPointColor = Color.blue;
+        [Tooltip("Show bouding rings of splats")]
+        public bool m_BoundingRing = false;
+        [Range(0.0f, 3.0f)]
+        [Tooltip("Thickness of bounding rings")]
+        public float m_BoundingRingThickness= 1.5f;
+        [Tooltip("Change the highlighting color of splats")]
+        public Color m_SelectedSplatColor = Color.magenta;
+        [Range(0.0f, 0.5f)]
+        [Tooltip("Linear interpolation strenght of highlighting color with splat color")]
+        public float m_HighlightLerpStrenght = 0.5f;
+        [Range(0.0f, 3.0f)]
+        [Tooltip("Thickness of selected splats bounding rings")]
+        public float m_SelectedSplatBorder = 1.5f;
+        [Tooltip("Specify color of selected splats center points")]
+        public Color m_SelectedCenterPointColor = Color.yellow;
         [Range(1,30)] [Tooltip("Sort splats only every N frames")]
         public int m_SortNthFrame = 1;
 
         public RenderMode m_RenderMode = RenderMode.Splats;
-        [Range(1.0f,15.0f)] public float m_PointDisplaySize = 3.0f;
+        [Range(1.0f,30.0f)] public float m_PointDisplaySize = 3.0f;
 
         public GaussianCutout[] m_Cutouts;
 
@@ -291,6 +323,13 @@ namespace GaussianSplatting.Runtime
             public static readonly int SplatOpacityScale = Shader.PropertyToID("_SplatOpacityScale");
             public static readonly int SplatSize = Shader.PropertyToID("_SplatSize");
             public static readonly int SplatCount = Shader.PropertyToID("_SplatCount");
+            public static readonly int CenterPointColor = Shader.PropertyToID("_CenterPointColor");
+            public static readonly int BoundingRing = Shader.PropertyToID("_BoundingRing"); 
+            public static readonly int SelectedSplatColor = Shader.PropertyToID("_SelectedSplatColor");
+            public static readonly int HighlightLerpStrenght = Shader.PropertyToID("_HighlightLerpStrenght");
+            public static readonly int SelectedSplatBorder = Shader.PropertyToID("_SelectedSplatBorder");
+            public static readonly int BoundingRingThickness = Shader.PropertyToID("_BoundingRingThickness");
+            public static readonly int SelectedCenterPointColor = Shader.PropertyToID("_SelectedCenterPointColor");
             public static readonly int SHOrder = Shader.PropertyToID("_SHOrder");
             public static readonly int SHOnly = Shader.PropertyToID("_SHOnly");
             public static readonly int DisplayIndex = Shader.PropertyToID("_DisplayIndex");

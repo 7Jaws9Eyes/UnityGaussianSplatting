@@ -19,10 +19,10 @@ namespace GaussianSplatting.Editor
         {
             if (tool == Tool.Move)
                 return typeof(GaussianMoveTool);
-            //if (tool == Tool.Rotate)
-            //    return typeof(GaussianRotateTool); // not correctly working yet
-            //if (tool == Tool.Scale)
-            //    return typeof(GaussianScaleTool); // not working correctly yet when the GS itself has scale
+            if (tool == Tool.Rotate)
+                return typeof(GaussianRotateTool); // not correctly working yet
+            if (tool == Tool.Scale)
+                return typeof(GaussianScaleTool); // not working correctly yet when the GS itself has scale
             return null;
         }
 

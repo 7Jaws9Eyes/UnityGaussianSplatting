@@ -16,6 +16,7 @@ CGPROGRAM
 #pragma fragment frag
 #pragma require compute
 #pragma use_dxc
+// #pragma enable_d3d11_debug_symbols
 
 #include "GaussianSplatting.hlsl"
 
@@ -31,6 +32,11 @@ struct v2f
 StructuredBuffer<SplatViewData> _SplatViewData;
 ByteAddressBuffer _SplatSelectedBits;
 uint _SplatBitsValid;
+bool _BoundingRing;
+half4 _SelectedSplatColor;
+float _SelectedSplatBorder;
+float _BoundingRingThickness;
+float _HighlightLerpStrenght;
 
 v2f vert (uint vtxID : SV_VertexID, uint instID : SV_InstanceID)
 {
@@ -82,21 +88,32 @@ half4 frag (v2f i) : SV_Target
 	if (i.col.a >= 0)
 	{
 		alpha = saturate(alpha * i.col.a);
+
+		if (_BoundingRing){
+			if (alpha > 7.0/255.0)
+			{
+				if (alpha < (_BoundingRingThickness + 7.0)/255.0)
+				{
+					alpha = 0.5;
+				}
+			}
+		}
+
 	}
 	else
 	{
 		// "selected" splat: magenta outline, increase opacity, magenta tint
-		half3 selectedColor = half3(1,0,1);
+		half3 selectedColor = _SelectedSplatColor.rgb;
 		if (alpha > 7.0/255.0)
 		{
-			if (alpha < 10.0/255.0)
+			if (alpha < (_SelectedSplatBorder + 7.0)/255.0)
 			{
-				alpha = 1;
+				alpha = _SelectedSplatColor.a;
 				i.col.rgb = selectedColor;
 			}
 			alpha = saturate(alpha + 0.3);
 		}
-		i.col.rgb = lerp(i.col.rgb, selectedColor, 0.5);
+		i.col.rgb = lerp(i.col.rgb, selectedColor, _HighlightLerpStrenght);
 	}
 	
     if (alpha < 1.0/255.0)
